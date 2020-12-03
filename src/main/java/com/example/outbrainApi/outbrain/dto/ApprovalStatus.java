@@ -1,4 +1,4 @@
-package com.example.demo.outbrain.dto;
+package com.example.outbrainApi.outbrain.dto;
 
 import java.util.List;
 
