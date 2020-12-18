@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class OutBrainApplication {
-	//oran-test
+	// Zizes2
 	public static void main(String[] args) {
 		SpringApplication.run(OutBrainApplication.class, args);
 	}
