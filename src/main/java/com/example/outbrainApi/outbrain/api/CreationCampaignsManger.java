@@ -3,7 +3,6 @@ package com.example.outbrainApi.outbrain.api;
 import com.example.outbrainApi.outbrain.dto.CampaignRetrive;
 import com.example.outbrainApi.service.AccountDuplicationResult;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -20,12 +19,12 @@ public class CreationCampaignsManger extends CampaignsManager<AccountDuplication
         this.newCampaignsForDates = newCampaignsForDates;
         this.allCampaignsNames = allCampaignsNames;
         this.originalCampaigns = originalCampaigns;
-
+        this.accountDuplicationResult = new AccountDuplicationResult();
     }
 
     @Override
     protected AccountDuplicationResult getResult() {
-        return accountDuplicationResult;
+        return this.accountDuplicationResult;
     }
 
     @Override

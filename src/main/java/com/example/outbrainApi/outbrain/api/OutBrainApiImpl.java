@@ -24,7 +24,7 @@ public class OutBrainApiImpl implements OutBrainApi {
 
 
         CampaignsProcessor<AccountDuplicationResult> creationCampaignsProcessor =
-                new CampaignsProcessor<>(new CreationCampaignsManger(10, token, account, newCampaignForDates,
+                new CampaignsProcessor<>(new CreationCampaignsManger(1, token, account, newCampaignForDates,
                         campaignsCollection.getAllCampaignsNames(), campaignsCollection.getOriginalCampaigns()));
 
         return creationCampaignsProcessor.process();
