@@ -1,5 +1,7 @@
 package com.example.outbrainApi.outbrain.api;
 
+import com.example.outbrainApi.service.AccountDuplicationResult;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -14,18 +16,18 @@ public class OutBrainApiImpl implements OutBrainApi {
     }
 
     @Override
-    public List<String> duplicateCampaigns(String account, List<String> newCampaignForDates, List<String> lastDuplicationDates) {
+    public AccountDuplicationResult duplicateCampaigns(String account, List<String> newCampaignForDates, List<String> lastDuplicationDates) {
 
         CampaignsProcessor<CampaignsCollection> collectionCampaignsProcessor =
-                new CampaignsProcessor<>(new CampaignsCollectionManager(10, token, account, lastDuplicationDates), 10);
+                new CampaignsProcessor<>(new CampaignsCollectionManager(10, token, account, lastDuplicationDates));
         CampaignsCollection campaignsCollection = collectionCampaignsProcessor.process();
 
 
-        CampaignsProcessor<NewCampaigns> creationCampaignsProcessor =
+        CampaignsProcessor<AccountDuplicationResult> creationCampaignsProcessor =
                 new CampaignsProcessor<>(new CreationCampaignsManger(10, token, account, newCampaignForDates,
-                        campaignsCollection.getAllCampaignsNames(), campaignsCollection.getOriginalCampaigns()), 600);
+                        campaignsCollection.getAllCampaignsNames(), campaignsCollection.getOriginalCampaigns()));
 
-        return creationCampaignsProcessor.process().getCampaigns();
+        return creationCampaignsProcessor.process();
     }
 }
 

@@ -16,7 +16,7 @@ public abstract class CampaignsManager<T> {
 
     protected abstract int getCount();
 
-    public abstract CampaignsRunner<T> getCampaignsRunner(int firstIndex, int lastIndex);
+    abstract CampaignsRunner<T> getCampaignsRunner(int firstIndex, int lastIndex);
 
     public int getCountsPerThread(){
 
@@ -31,10 +31,6 @@ public abstract class CampaignsManager<T> {
 
     public int getNumOfThreads() {
         return numOfThreads;
-    }
-
-    public void setNumOfThreads(int numOfThreads) {
-        this.numOfThreads = numOfThreads;
     }
 
     public abstract void addResult(T object);

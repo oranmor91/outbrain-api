@@ -20,11 +20,16 @@ public class CampaignService {
         this.outBrainApi = new OutBrainApiImpl();
     }
 
-    public void duplicateCampaigns(CampaignsDuplication campaignsDuplication){
-        List<String> newCampaigns =
-                outBrainApi.duplicateCampaigns(campaignsDuplication.getAccount(),
-                campaignsDuplication.getNewCampaignForDates(), campaignsDuplication.getLastDuplicationDates());
-        logger.info("Created {} campaigns for account: {}", newCampaigns.size(), campaignsDuplication.getAccount());
-        newCampaigns.forEach(System.out::println);
+    public void duplicateCampaigns(CampaignsDuplication campaignsDuplication) {
+        AccountDuplicationResult accountDuplicationResult = outBrainApi.duplicateCampaigns
+                (campaignsDuplication.getAccount(), campaignsDuplication.getNewCampaignForDates(), campaignsDuplication.getLastDuplicationDates());
+        logger.info("Created {} new campaigns for account: {}, The campaigns names: {}",
+                accountDuplicationResult.getNewCampaigns().size(), campaignsDuplication.getAccount(),
+                String.join("\n", accountDuplicationResult.getNewCampaigns()));
+
+        if (!accountDuplicationResult.getFailureDuplications().isEmpty())
+            logger.error("Failed to duplicate {} campaigns for account: {}, The original campaigns names: {}",
+                    accountDuplicationResult.getFailureDuplications().size(), campaignsDuplication.getAccount(),
+                    String.join("\n", accountDuplicationResult.getFailureDuplications()));
     }
 }

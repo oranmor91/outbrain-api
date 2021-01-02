@@ -1,6 +1,7 @@
 package com.example.outbrainApi.outbrain.api;
 
 import com.example.outbrainApi.outbrain.dto.*;
+import com.example.outbrainApi.service.AccountDuplicationResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,47 +12,59 @@ import java.util.UUID;
 
 public class CampaignCreator extends CampaignsRunner {
 
-    private NewCampaigns newCampaigns;
+    private AccountDuplicationResult duplicationResult;
     private OutBrainClientApi outBrainClientApi;
     private Logger logger = LoggerFactory.getLogger(CampaignCreator.class);
 
     public CampaignCreator(CampaignsManager campaignsManager, int firstIndex, int lastIndex) {
         super(campaignsManager, firstIndex, lastIndex);
         this.outBrainClientApi = new OutBrainClientImpl(campaignsManager.token, campaignsManager.account);
-        this.newCampaigns = new NewCampaigns();
+        this.duplicationResult = new AccountDuplicationResult();
     }
 
 
     @Override
     public void run() {
-        int numOfDuplication = 0;
+        int numOfSuccessDuplications = 0;
+        int numOfErrorDuplications = 0;
         CreationCampaignsManger campaignsManager = (CreationCampaignsManger) this.campaignsManager;
         for (CampaignRetrive originalCampaign : campaignsManager.getOriginalCampaigns().subList(firstIndex, lastIndex)) {
             int countName = 1;
             for (String newCampaignDate : campaignsManager.getNewCampaignsForDates()) {
-                Campaign campaign = duplicateCampaign(originalCampaign, countName, newCampaignDate);
-                logger.info("created campaign: {}, num of duplications for this thread: {}", campaign.getName(), numOfDuplication);
-                numOfDuplication++;
-                numOfDuplication++;
-                newCampaigns.getCampaigns().add(campaign.getName());
+                try {
+                    Campaign campaign = duplicateCampaign(originalCampaign, countName, newCampaignDate);
+                    numOfSuccessDuplications++;
+                    duplicationResult.getNewCampaigns().add(campaign.getName());
+                    logger.info("Created a new campaign: {} for account {}, num of duplications for this thread: {}", campaign.getName(),
+                            campaignsManager.account, numOfSuccessDuplications);
+                } catch (Exception e){
+                    duplicationResult.getFailureDuplications().add(originalCampaign.getName());
+                    numOfErrorDuplications ++;
+                    logger.error("Failed to duplicate the campaign: {} for account {}, num of failure duplications for this thread: {}",
+                            originalCampaign.getName(), campaignsManager.account, numOfErrorDuplications, e);
+                }
             }
         }
-        campaignsManager.addResult(newCampaigns);
+        campaignsManager.addResult(duplicationResult);
     }
 
-    private Campaign duplicateCampaign (CampaignRetrive currentCampaign,int countName, String newCampaignDate){
+    private Campaign duplicateCampaign (CampaignRetrive currentCampaign,int countName, String newCampaignDate) throws Exception{
         PromotedLinks promotedLinks = outBrainClientApi.getPromotedLinks(currentCampaign.getId());
         BudgetCreate budget = createBudget(currentCampaign.getBudget().getAmount(),
                 currentCampaign.getBudget().getPacing(), currentCampaign.getBudget().getType(), newCampaignDate);
         BudgetRetreive newBudget = outBrainClientApi.createBudget(budget);
         CampaignCreate campaign = createCampaign(currentCampaign, newBudget.getId(), countName);
-        CampaignRetrive newCampaign = outBrainClientApi.createCampaign(campaign);
-        promotedLinks.getPromotedLinks().forEach(p -> {
-                    PromotedLink promotedLink = createPromotedLink(p);
-                    outBrainClientApi.createPromotedLink(newCampaign.getId(), promotedLink);
-                }
-        );
-        return newCampaign;
+        try {
+            CampaignRetrive newCampaign = outBrainClientApi.createCampaign(campaign);
+            promotedLinks.getPromotedLinks().forEach(p -> {
+                        PromotedLink promotedLink = createPromotedLink(p);
+                        outBrainClientApi.createPromotedLink(newCampaign.getId(), promotedLink);
+                    }
+            );
+            return newCampaign;
+        }catch(Exception e){
+            throw e;
+        }
     }
 
     private BudgetCreate createBudget(Double amount, String pacing, String type, String newCampaignDate) {

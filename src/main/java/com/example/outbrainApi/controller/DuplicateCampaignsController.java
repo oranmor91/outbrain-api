@@ -24,7 +24,6 @@ public class DuplicateCampaignsController {
 
     @PostMapping
     public void duplicateCampaigns(@RequestBody CampaignsDuplication campaignsDuplication){
-        //TEST-234
         logger.info("Starting duplication process for account: {} ", campaignsDuplication.getAccount());
         campaignService.duplicateCampaigns(campaignsDuplication);
     }

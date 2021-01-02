@@ -3,6 +3,7 @@ package com.example.outbrainApi.outbrain.api;
 import com.example.outbrainApi.model.Parameter;
 import com.example.outbrainApi.outbrain.Util;
 import com.example.outbrainApi.outbrain.dto.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import org.slf4j.Logger;
@@ -72,6 +73,7 @@ public class OutBrainClientImpl implements OutBrainClientApi {
             campaignResponse = mapper.readValue(campaignsInJsonString, CampaignResponse.class);
         } catch (IOException e) {
             logger.error("error to get campaign: {}", campaignsInJsonString, e);
+            e.printStackTrace();
         }
         return campaignResponse;
     }
@@ -101,17 +103,19 @@ public class OutBrainClientImpl implements OutBrainClientApi {
             campaign = mapper.readValue(campaignInJsonString, CampaignRetrive.class);
         } catch (IOException e) {
             logger.error("error to get campaign: {}", campaignInJsonString, e);
+            e.printStackTrace();
         }
         return campaign;
     }
 
-    public BudgetRetreive createBudget(BudgetCreate budget){
+    public BudgetRetreive createBudget(BudgetCreate budget) throws Exception{
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        String json = null;
+        String json ;
         try {
             json = ow.writeValueAsString(budget);
         } catch (IOException e) {
             logger.error("error to get budgetCreate: {}", budget, e);
+            throw e;
         }
         Entity payload = Entity.json(json);
 
@@ -125,7 +129,7 @@ public class OutBrainClientImpl implements OutBrainClientApi {
         try {
             url = Util.appendToUrl(createBudgetUrl, parameters);
         } catch (URISyntaxException e) {
-            e.printStackTrace();
+            throw e;
         }
 
         Response response = client.target(url)
@@ -135,16 +139,17 @@ public class OutBrainClientImpl implements OutBrainClientApi {
 
 
         String budgetInJsonString = response.readEntity(String.class);
-        BudgetRetreive budgetRetreive = null;
+        BudgetRetreive budgetRetreive;
         try {
             budgetRetreive = mapper.readValue(budgetInJsonString, BudgetRetreive.class);
         } catch (IOException e) {
             logger.error("error to get budget: {}", budgetInJsonString, e);
+            throw e;
         }
         return budgetRetreive;
     }
 
-    public PromotedLinks getPromotedLinks(String campaignId){
+    public PromotedLinks getPromotedLinks(String campaignId) throws Exception{
         String retrivePromotedLinks = String.format(OutBrainClientImpl.RETRIVE_PROMOTEDLINKS_URL, campaignId);
 
         List<Parameter> parameters = new ArrayList<>();
@@ -160,7 +165,7 @@ public class OutBrainClientImpl implements OutBrainClientApi {
         try {
             url = Util.appendToUrl(retrivePromotedLinks, parameters);
         } catch (URISyntaxException e) {
-            e.printStackTrace();
+            throw e;
         }
 
         Response response = client.target(url)
@@ -174,17 +179,19 @@ public class OutBrainClientImpl implements OutBrainClientApi {
             promotedLinks = mapper.readValue(promotedLinksInJsonString, PromotedLinks.class);
         } catch (IOException e) {
             logger.error("error to get promotedLinks: {}", promotedLinksInJsonString, e);
+            throw e;
         }
         return promotedLinks;
     }
 
-    public CampaignRetrive createCampaign(CampaignCreate campaign){
+    public CampaignRetrive createCampaign(CampaignCreate campaign) throws URISyntaxException, JsonProcessingException {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         String json = null;
         try {
             json = ow.writeValueAsString(campaign);
         } catch (IOException e) {
             logger.error("error to get campaign: {}", campaign, e);
+            throw e;
         }
         Entity<String> payload = Entity.json(json);
 
@@ -196,7 +203,7 @@ public class OutBrainClientImpl implements OutBrainClientApi {
             url = Util.appendToUrl(OutBrainClientImpl.CREATE_CAMPAIGN_URL, parameters);
         } catch (URISyntaxException e) {
             logger.error("ass something");
-            e.printStackTrace();
+            throw e;
         }
 
         Response response = client.target(url)
@@ -204,11 +211,12 @@ public class OutBrainClientImpl implements OutBrainClientApi {
                 .header(OB_TOKEN_V1, token)
                 .post(payload);
         String campaigntInJsonString = response.readEntity(String.class);
-        CampaignRetrive campaignRetreive = null;
+        CampaignRetrive campaignRetreive;
         try {
             campaignRetreive = mapper.readValue(campaigntInJsonString, CampaignRetrive.class);
         } catch (IOException e) {
             logger.error("error to get campaign: {}", campaign, e);
+            throw e;
         }
         return campaignRetreive;
     }
