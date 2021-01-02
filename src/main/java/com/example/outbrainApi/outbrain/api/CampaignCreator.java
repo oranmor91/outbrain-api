@@ -108,8 +108,8 @@ public class CampaignCreator extends CampaignsRunner {
     }
 
     private String createSuffixTrackingCode(String currentCampaignName, String currentSuffixTrackingCode, String newName) {
-        String currentName = currentCampaignName.replaceAll("\\s+","");
-        int firstIndex = currentSuffixTrackingCode.indexOf(currentName);
+//        String currentName = currentCampaignName.replaceAll("\\s+","");
+        int firstIndex = currentSuffixTrackingCode.indexOf(currentCampaignName);
         int lastCharIndex = firstIndex + currentCampaignName.length();
         String s = "";
         try {
