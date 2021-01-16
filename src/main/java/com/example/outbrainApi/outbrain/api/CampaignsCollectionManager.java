@@ -33,11 +33,6 @@ public class CampaignsCollectionManager extends CampaignsManager<CampaignsCollec
     }
 
     @Override
-    public int getCountsPerThread() {
-        return super.getCountsPerThread();
-    }
-
-    @Override
     public synchronized void addResult(CampaignsCollection campaignsCollection) {
         this.campaignsCollection.getOriginalCampaigns().addAll(campaignsCollection.getOriginalCampaigns());
         this.campaignsCollection.getAllCampaignsNames().addAll(campaignsCollection.getAllCampaignsNames());

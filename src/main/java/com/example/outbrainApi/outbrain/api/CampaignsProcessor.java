@@ -23,7 +23,7 @@ public class CampaignsProcessor<T> {
             futures.add(executorService.submit(manager.getCampaignsRunner(firstIndex, lastIndex)));
             firstIndex = lastIndex + 1;
             if (firstIndex >= manager.getCount()){
-                firstIndex = manager.getCount() -1;
+                break;
             }
             i++;
         }

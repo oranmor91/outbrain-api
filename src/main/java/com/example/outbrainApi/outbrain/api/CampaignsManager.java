@@ -18,12 +18,16 @@ public abstract class CampaignsManager<T> {
 
     abstract CampaignsRunner<T> getCampaignsRunner(int firstIndex, int lastIndex);
 
-    public int getCountsPerThread(){
+    protected int getCountsPerThread(){
 
         int totalCount = getCount();
 
         if (totalCount <= 0){
             return 0;
+        }
+
+        if (totalCount == numOfThreads){
+            return 1;
         }
 
         return (totalCount / numOfThreads) + 1;

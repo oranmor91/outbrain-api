@@ -22,12 +22,12 @@ public class CampaignsCollection {
         this.originalCampaigns = new ArrayList<>();
     }
 
-    public Set<String> getAllCampaignsNames() {
+    public synchronized Set<String> getAllCampaignsNames() {
         return allCampaignsNames;
     }
 
 
-    public List<CampaignRetrive> getOriginalCampaigns() {
+    public synchronized List<CampaignRetrive> getOriginalCampaigns() {
         return originalCampaigns;
     }
 

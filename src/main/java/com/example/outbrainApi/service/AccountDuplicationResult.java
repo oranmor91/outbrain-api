@@ -18,8 +18,12 @@ public class AccountDuplicationResult {
         this.failureDuplications = failureDuplications;
     }
 
-    public List<String> getNewCampaigns() {
+    public synchronized List<String> getNewCampaigns() {
         return newCampaigns;
+    }
+
+    public synchronized void addNewCampaigns(String newCampaignName){
+        this.getNewCampaigns().add(newCampaignName);
     }
 
     public void setNewCampaigns(List<String> newCampaigns) {

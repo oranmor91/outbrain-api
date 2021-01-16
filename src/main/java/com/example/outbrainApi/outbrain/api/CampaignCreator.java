@@ -28,13 +28,22 @@ public class CampaignCreator extends CampaignsRunner {
         int numOfSuccessDuplications = 0;
         int numOfErrorDuplications = 0;
         CreationCampaignsManger campaignsManager = (CreationCampaignsManger) this.campaignsManager;
-        for (CampaignRetrive originalCampaign : campaignsManager.getOriginalCampaigns().subList(firstIndex, lastIndex)) {
+
+        List<CampaignRetrive> originalCampaigns;
+        if (lastIndex == campaignsManager.getOriginalCampaigns().size()){
+            originalCampaigns = campaignsManager.getOriginalCampaigns().subList(firstIndex, lastIndex);
+        }else{
+            originalCampaigns = campaignsManager.getOriginalCampaigns().subList(firstIndex, lastIndex + 1);
+        }
+
+
+        for (CampaignRetrive originalCampaign : originalCampaigns) {
             int countName = 1;
             for (String newCampaignDate : campaignsManager.getNewCampaignsForDates()) {
                 try {
                     Campaign campaign = duplicateCampaign(originalCampaign, countName, newCampaignDate);
                     numOfSuccessDuplications++;
-                    duplicationResult.getNewCampaigns().add(campaign.getName());
+                    duplicationResult.addNewCampaigns(campaign.getName());
                     logger.info("Created a new campaign: {} for account {}, num of duplications for this thread: {}", campaign.getName(),
                             campaignsManager.account, numOfSuccessDuplications);
                 } catch (Exception e){
@@ -108,8 +117,8 @@ public class CampaignCreator extends CampaignsRunner {
     }
 
     private String createSuffixTrackingCode(String currentCampaignName, String currentSuffixTrackingCode, String newName) {
-//        String currentName = currentCampaignName.replaceAll("\\s+","");
-        int firstIndex = currentSuffixTrackingCode.indexOf(currentCampaignName);
+        String currentName = currentCampaignName.replaceAll("\\s+","");
+        int firstIndex = currentSuffixTrackingCode.indexOf(currentName);
         int lastCharIndex = firstIndex + currentCampaignName.length();
         String s = "";
         try {

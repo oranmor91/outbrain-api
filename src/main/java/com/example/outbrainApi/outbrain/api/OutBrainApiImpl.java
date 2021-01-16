@@ -19,7 +19,7 @@ public class OutBrainApiImpl implements OutBrainApi {
     public AccountDuplicationResult duplicateCampaigns(String account, List<String> newCampaignForDates, List<String> lastDuplicationDates) {
 
         CampaignsProcessor<CampaignsCollection> collectionCampaignsProcessor =
-                new CampaignsProcessor<>(new CampaignsCollectionManager(10, token, account, lastDuplicationDates));
+                new CampaignsProcessor<>(new CampaignsCollectionManager(1, token, account, lastDuplicationDates));
         CampaignsCollection campaignsCollection = collectionCampaignsProcessor.process();
 
 
