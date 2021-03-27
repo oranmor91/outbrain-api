@@ -186,6 +186,7 @@ public class CampaignCreator extends CampaignsRunner {
         imageMetadata.setUrl(otherPromotedLink.getCachedImageUrl());
         imageMetadata.setRequestedImageUrl(otherPromotedLink.getCachedImageUrl());
         imageMetadata.setOriginalImageUrl(otherPromotedLink.getCachedImageUrl());
+        imageMetadata.setCropType(otherPromotedLink.getImageMetadata().getCropType()); //todo - check
 
         promotedLink.setImageMetadata(imageMetadata);
 

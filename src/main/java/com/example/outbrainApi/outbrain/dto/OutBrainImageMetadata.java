@@ -10,6 +10,7 @@ public class OutBrainImageMetadata {
     private String originalImageUrl;
     private String type;
     private String url;
+    private String cropType;
 
     public String getId() {
         return id;
@@ -51,5 +52,11 @@ public class OutBrainImageMetadata {
         this.url = url;
     }
 
+    public String getCropType() {
+        return cropType;
+    }
 
+    public void setCropType(String cropType) {
+        this.cropType = cropType;
+    }
 }
